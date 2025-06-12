@@ -1,9 +1,7 @@
 #![forbid(unsafe_code)]
 
 use {
-    agave_feature_set::{
-        disable_zk_elgamal_proof_program, reenable_zk_elgamal_proof_program
-    },
+    agave_feature_set::{disable_zk_elgamal_proof_program, reenable_zk_elgamal_proof_program},
     bytemuck::Pod,
     solana_instruction::error::InstructionError,
     solana_log_collector::ic_msg,
