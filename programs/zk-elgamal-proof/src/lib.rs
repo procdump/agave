@@ -1,6 +1,9 @@
 #![forbid(unsafe_code)]
 
 use {
+    agave_feature_set::{
+        disable_zk_elgamal_proof_program, reenable_zk_elgamal_proof_program
+    },
     bytemuck::Pod,
     solana_instruction::error::InstructionError,
     solana_log_collector::ic_msg,
@@ -173,10 +176,10 @@ fn process_close_proof_context(invoke_context: &mut InvokeContext) -> Result<(),
 declare_process_instruction!(Entrypoint, 0, |invoke_context| {
     if invoke_context
         .get_feature_set()
-        .disable_zk_elgamal_proof_program
+        .is_active(&disable_zk_elgamal_proof_program::id())
         && !invoke_context
             .get_feature_set()
-            .reenable_zk_elgamal_proof_program
+            .is_active(&reenable_zk_elgamal_proof_program::id())
     {
         ic_msg!(
             invoke_context,
