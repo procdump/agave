@@ -59,16 +59,10 @@ solana-type-overrides = { workspace = true }
 spl-generic-token = { workspace = true }
 thiserror = { workspace = true }
 
-<<<<<<< HEAD
-[target.'cfg(debug_assertions)'.dependencies]
-solana-transaction-context = { workspace = true, features = ["debug-signature"] }
-
 [lib]
 crate-type = ["lib"]
 name = "solana_svm"
 
-=======
->>>>>>> 51c33c2f3 (Remove conditional feature as it is not supported (#6577))
 [dev-dependencies]
 agave-feature-set = { workspace = true }
 agave-reserved-account-keys = { workspace = true }
