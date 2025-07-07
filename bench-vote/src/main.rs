@@ -73,7 +73,7 @@ fn main() -> Result<()> {
                 .value_name("KEYPAIR")
                 .takes_value(true)
                 .validator(is_keypair_or_ask_keyword)
-                .help("Identity keypair for the QUIC endpoint when '--use-quic' is set true. If it is not specified a dynamic key is created."),
+                .help("Identity keypair for the QUIC endpoint. If it is not specified a random key is created."),
         )
         .arg(
             Arg::with_name("num-recv-sockets")
@@ -158,10 +158,12 @@ fn main() -> Result<()> {
     let ip_addr = destination.map_or(IpAddr::V4(Ipv4Addr::UNSPECIFIED), |addr| addr.ip());
 
     let quic_params = vote_use_quic.then(|| {
-        let identity_keypair = keypair_of(&matches, "identity").or_else(|| {
-            println!("--identity is not specified when --use-quic is on. Will generate a key dynamically.");
-            Some(Keypair::new())
-        }).unwrap();
+        let identity_keypair = keypair_of(&matches, "identity")
+            .or_else(|| {
+                println!("--identity is not specified, will generate a key dynamically.");
+                Some(Keypair::new())
+            })
+            .unwrap();
 
         let stake: u64 = 1024;
         let total_stake: u64 = 1024;
@@ -177,7 +179,12 @@ fn main() -> Result<()> {
 
         QuicParams {
             identity_keypair,
+<<<<<<< HEAD
             staked_nodes
+=======
+            staked_nodes,
+            connection_pool_size,
+>>>>>>> a2525643e (TPU: deprecate ways to enable UDP in TPU via command-line args. (#6860))
         }
     });
 
