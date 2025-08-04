@@ -9531,6 +9531,7 @@ dependencies = [
  "solana-genesis-config",
  "solana-hash",
  "solana-instruction",
+ "solana-instructions-sysvar",
  "solana-keypair",
  "solana-loader-v3-interface 5.0.0",
  "solana-log-collector",
