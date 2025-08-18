@@ -468,7 +468,7 @@ impl solana_sysvar::program_stubs::SyscallStubs for SyscallStubs {
         let current_ix_index = load_current_index_checked(&ai).ok()? as usize;
         // We're actually looking for current_index - index - 1
         let index = current_ix_index.checked_sub(index)?.checked_sub(1)?;
-        Some(load_instruction_at_checked(index, &ai).ok()?)
+        load_instruction_at_checked(index, &ai).ok()
     }
 }
 
