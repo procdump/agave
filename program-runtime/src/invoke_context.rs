@@ -97,6 +97,13 @@ impl ContextObject for InvokeContext<'_> {
     fn get_remaining(&self) -> u64 {
         *self.compute_meter.borrow()
     }
+
+    fn get_nesting_level(&self) -> u32 {
+        self.transaction_context
+            .get_current_instruction_context()
+            .map(|instruction_context| instruction_context.get_stack_height())
+            .unwrap_or(0) as u32
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
