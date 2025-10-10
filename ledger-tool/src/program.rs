@@ -540,7 +540,7 @@ pub fn program(ledger_path: &Path, matches: &ArgMatches<'_>) {
     if provide_instruction_data_offset_in_vm_r2 {
         vm.registers[2] = instruction_data_offset as u64;
     }
-    let (instruction_count, result) = vm.execute_program(&verified_executable, interpreted);
+    let (instruction_count, result) = vm.execute_program(&verified_executable, interpreted, None);
     let duration = Instant::now() - start_time;
     if let Some(trace_option) = matches.value_of("trace") {
         vm.context_object_pointer.iterate_vm_traces(

@@ -1453,6 +1453,8 @@ fn execute<'a, 'b: 'a>(
     let transaction_context = &invoke_context.transaction_context;
     let instruction_context = transaction_context.get_current_instruction_context()?;
     let program_id = *instruction_context.get_program_key()?;
+    // Offset CPIs' debug_port with the nesting level.
+    let debug_port_offset = Some(instruction_context.get_stack_height().saturating_sub(1) as u16);
     let is_loader_deprecated =
         instruction_context.get_program_owner()? == bpf_loader_deprecated::id();
     #[cfg(any(target_os = "windows", not(target_arch = "x86_64")))]
@@ -1517,7 +1519,8 @@ fn execute<'a, 'b: 'a>(
         if provide_instruction_data_offset_in_vm_r2 {
             vm.registers[2] = instruction_data_offset as u64;
         }
-        let (compute_units_consumed, result) = vm.execute_program(executable, !use_jit);
+        let (compute_units_consumed, result) =
+            vm.execute_program(executable, !use_jit, debug_port_offset);
         let register_trace = std::mem::take(&mut vm.register_trace);
         MEMORY_POOL.with_borrow_mut(|memory_pool| {
             memory_pool.put_stack(stack);
