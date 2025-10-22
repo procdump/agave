@@ -554,7 +554,7 @@ pub fn program(ledger_path: &Path, matches: &ArgMatches<'_>) {
         vm.debug_port = Some(matches.value_of("port").unwrap().parse::<u16>().unwrap());
     }
     vm.registers[1] = MM_INPUT_START;
-    let (instruction_count, result) = vm.execute_program(&verified_executable, interpreted);
+    let (instruction_count, result) = vm.execute_program(&verified_executable, interpreted, None);
     let duration = Instant::now() - start_time;
     if matches.occurrences_of("trace") > 0 {
         // top level trace is stored in syscall_context

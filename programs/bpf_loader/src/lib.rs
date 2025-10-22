@@ -1455,6 +1455,14 @@ fn execute<'a, 'b: 'a>(
     let transaction_context = &invoke_context.transaction_context;
     let instruction_context = transaction_context.get_current_instruction_context()?;
     let program_id = *instruction_context.get_program_key()?;
+    cfg_if! {
+        if #[cfg(feature = "sbpf-debugger")] {
+            // Offset CPIs' debug_port with the nesting level.
+            let debug_port_offset = Some(instruction_context.get_stack_height().saturating_sub(1) as u16);
+        } else {
+            let debug_port_offset = None;
+        }
+    }
     let is_loader_deprecated =
         instruction_context.get_program_owner()? == bpf_loader_deprecated::id();
     cfg_if! {
@@ -1516,7 +1524,8 @@ fn execute<'a, 'b: 'a>(
 
         vm.context_object_pointer.execute_time = Some(Measure::start("execute"));
         vm.registers[1] = ebpf::MM_INPUT_START;
-        let (compute_units_consumed, result) = vm.execute_program(executable, !use_jit);
+        let (compute_units_consumed, result) =
+            vm.execute_program(executable, !use_jit, debug_port_offset);
         MEMORY_POOL.with_borrow_mut(|memory_pool| {
             memory_pool.put_stack(stack);
             memory_pool.put_heap(heap);
