@@ -20,11 +20,7 @@ name = "solana_bpf_loader_program"
 default = ["metrics"]
 agave-unstable-api = []
 metrics = ["solana-program-runtime/metrics"]
-sbpf-debugger = [
-    "sbpf-interpreter-mode",
-    "solana-sbpf/debugger",
-]
-sbpf-interpreter-mode = []
+sbpf-debugger = ["solana-sbpf/debugger"]
 shuttle-test = [
     "solana-program-runtime/shuttle-test",
     "solana-sbpf/shuttle-test",
