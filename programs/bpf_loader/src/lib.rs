@@ -1471,6 +1471,7 @@ fn execute<'a, 'b: 'a>(
         if #[cfg(any(
             target_os = "windows",
             not(target_arch = "x86_64"),
+            feature = "sbpf-debugger"
         ))] {
             let use_jit = false;
         } else {
