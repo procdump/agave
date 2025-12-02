@@ -1531,7 +1531,7 @@ fn execute<'a, 'b: 'a>(
 
         #[cfg(feature = "sbpf-debugger")]
         if let Some(debug_port) = &mut vm.debug_port {
-            // Apply an offset to the debug port with regards to the CPI level to prevent port collisions.
+            // Offset the debug port with regards to the CPI level to prevent port collisions.
             let debug_port_cpi_offset = vm
                 .context_object_pointer
                 .transaction_context
