@@ -1478,12 +1478,6 @@ fn execute<'a, 'b: 'a>(
             let use_jit = executable.get_compiled_program().is_some();
         }
     }
-    cfg_if! {
-        if #[cfg(feature = "sbpf-debugger")] {
-            // Calculate an offset to the VM's debug port by the CPI level.
-            let debug_port_cpi_offset = instruction_context.get_stack_height().saturating_sub(1) as u16;
-        }
-    }
     let stricter_abi_and_runtime_constraints = invoke_context
         .get_feature_set()
         .stricter_abi_and_runtime_constraints;
@@ -1537,7 +1531,13 @@ fn execute<'a, 'b: 'a>(
 
         #[cfg(feature = "sbpf-debugger")]
         if let Some(debug_port) = &mut vm.debug_port {
-            // Apply the debug port offset with regards to the CPI level to prevent port collisions.
+            // Apply an offset to the debug port with regards to the CPI level to prevent port collisions.
+            let debug_port_cpi_offset = vm
+                .context_object_pointer
+                .transaction_context
+                .get_current_instruction_context()?
+                .get_stack_height()
+                .saturating_sub(1) as u16;
             *debug_port = debug_port.saturating_add(debug_port_cpi_offset);
         }
 
