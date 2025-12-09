@@ -1458,7 +1458,8 @@ fn execute<'a, 'b: 'a>(
     cfg_if! {
         if #[cfg(feature = "sbpf-debugger")] {
             // Offset CPIs' debug_port with the nesting level.
-            let debug_port_offset = Some(instruction_context.get_stack_height().saturating_sub(1) as u16);
+            // let debug_port_offset = Some(instruction_context.get_stack_height().saturating_sub(1) as u16);
+            let debug_port_offset = None; // Don't do this as the sock is dropped after accept in sbpf and the port actually can be reused!
         } else {
             let debug_port_offset = None;
         }
