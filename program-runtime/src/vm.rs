@@ -229,6 +229,11 @@ pub fn execute<'a, 'b: 'a>(
         };
         create_vm_time.stop();
 
+        #[cfg(feature = "sbpf-debugger")]
+        if vm.context_object_pointer.debug_port.is_none() {
+            // Change the debug port only if not already set.
+            vm.context_object_pointer.debug_port = invoke_context.debug_port;
+        }
         vm.context_object_pointer.execute_time = Some(Measure::start("execute"));
         vm.registers[1] = ebpf::MM_INPUT_START;
 
