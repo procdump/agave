@@ -234,6 +234,7 @@ pub fn execute<'a, 'b: 'a>(
         #[cfg(feature = "sbpf-debugger")]
         {
             vm.debug_port = debug_port;
+            vm.debug_metadata = Some(program_id.to_string().into());
         }
         vm.context_object_pointer.execute_time = Some(Measure::start("execute"));
         vm.registers[1] = ebpf::MM_INPUT_START;
