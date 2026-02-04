@@ -523,7 +523,7 @@ solana-runtime = { path = "runtime", version = "=4.0.0-alpha.0", features = ["ag
 solana-runtime-transaction = { path = "runtime-transaction", version = "=4.0.0-alpha.0", features = ["agave-unstable-api"] }
 solana-sanitize = "3.0.1"
 # solana-sbpf = { version = "=0.14.2", default-features = false }
-solana-sbpf = { git = "https://github.com/procdump/sbpf.git", branch = "metadata_pseudo_register2", default-features = false }
+solana-sbpf = { git = "https://github.com/procdump/sbpf.git", branch = "metadata_pseudo_register3", default-features = false }
 solana-sdk-ids = "3.1.0"
 solana-secp256k1-program = "3.0.0"
 solana-secp256k1-recover = "3.1.0"
