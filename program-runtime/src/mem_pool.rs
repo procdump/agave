@@ -1,7 +1,7 @@
 use {
     crate::execution_budget::{
         MAX_CALL_DEPTH, MAX_HEAP_FRAME_BYTES, MAX_INSTRUCTION_STACK_DEPTH_SIMD_0268,
-        MIN_HEAP_FRAME_BYTES, STACK_FRAME_SIZE,
+        MIN_HEAP_FRAME_BYTES,
     },
     solana_sbpf::{aligned_memory::AlignedMemory, ebpf::HOST_ALIGN},
     std::array,
@@ -60,17 +60,21 @@ impl Reset for AlignedMemory<{ HOST_ALIGN }> {
 pub struct VmMemoryPool {
     stack: Pool<AlignedMemory<{ HOST_ALIGN }>, MAX_INSTRUCTION_STACK_DEPTH_SIMD_0268>,
     heap: Pool<AlignedMemory<{ HOST_ALIGN }>, MAX_INSTRUCTION_STACK_DEPTH_SIMD_0268>,
+    stack_frame_size: usize,
 }
 
 impl VmMemoryPool {
     pub fn new() -> Self {
+        let stack_frame_size = solana_sbpf::vm::get_stack_frame_size();
         Self {
             stack: Pool::new(array::from_fn(|_| {
-                AlignedMemory::zero_filled(STACK_FRAME_SIZE * MAX_CALL_DEPTH)
+                #[allow(clippy::arithmetic_side_effects)]
+                AlignedMemory::zero_filled(stack_frame_size * MAX_CALL_DEPTH)
             })),
             heap: Pool::new(array::from_fn(|_| {
                 AlignedMemory::zero_filled(MAX_HEAP_FRAME_BYTES as usize)
             })),
+            stack_frame_size,
         }
     }
 
@@ -82,8 +86,9 @@ impl VmMemoryPool {
         self.heap.len()
     }
 
+    #[allow(clippy::arithmetic_side_effects)]
     pub fn get_stack(&mut self, size: usize) -> AlignedMemory<{ HOST_ALIGN }> {
-        debug_assert!(size == STACK_FRAME_SIZE * MAX_CALL_DEPTH);
+        debug_assert!(size == self.stack_frame_size * MAX_CALL_DEPTH);
         self.stack
             .get()
             .unwrap_or_else(|| AlignedMemory::zero_filled(size))
