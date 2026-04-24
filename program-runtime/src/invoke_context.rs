@@ -29,6 +29,7 @@ use {
         error::{EbpfError, ProgramResult},
         memory_region::MemoryMapping,
         program::{BuiltinProgram, SBPFVersion},
+        static_analysis::RegisterTraceEntry,
         vm::{ContextObject, EbpfVm},
     },
     solana_sdk_ids::{
@@ -59,7 +60,7 @@ use {
 pub type BuiltinFunctionRegisterer =
     fn(&mut BuiltinProgram<InvokeContext<'static, 'static>>, &str) -> Result<(), ElfError>;
 pub type Executable = GenericExecutable<InvokeContext<'static, 'static>>;
-pub type RegisterTrace<'a> = &'a [[u64; 12]];
+pub type RegisterTrace<'a> = &'a [RegisterTraceEntry];
 
 /// Adapter so we can unify the interfaces of built-in programs and syscalls
 #[macro_export]
@@ -237,7 +238,7 @@ pub struct InvokeContext<'a, 'ix_data> {
     pub timings: ExecuteDetailsTimings,
     pub memory_contexts: MemoryContexts,
     /// Pairs of index in TX instruction trace and VM register trace
-    register_traces: Vec<(usize, Vec<[u64; 12]>)>,
+    register_traces: Vec<(usize, Vec<RegisterTraceEntry>)>,
     /// Debug port to use for this executing transaction.
     #[cfg(feature = "sbpf-debugger")]
     pub debug_port: Option<u16>,
@@ -730,7 +731,7 @@ impl<'a, 'ix_data> InvokeContext<'a, 'ix_data> {
     }
 
     /// Insert a VM register trace
-    pub fn insert_register_trace(&mut self, register_trace: Vec<[u64; 12]>) {
+    pub fn insert_register_trace(&mut self, register_trace: Vec<RegisterTraceEntry>) {
         if register_trace.is_empty() {
             return;
         }
